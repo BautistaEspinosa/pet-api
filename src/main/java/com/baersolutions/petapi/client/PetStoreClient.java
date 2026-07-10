@@ -25,9 +25,12 @@ public class PetStoreClient {
   public PetStorePetDto getPetById(Long petId) {
 
     try {
-      return restClient.get().uri("/pet/{petId}", petId).retrieve().body(PetStorePetDto.class);
-    } catch (RestClientException ex) {
-      throw new ExternalServiceException("Error retrieving pet from Swagger Petstore.", ex);
+      return restClient.get()
+          .uri("/pet/{petId}", petId)
+          .retrieve()
+          .body(PetStorePetDto.class);
+    } catch (RestClientException exception) {
+      throw new ExternalServiceException("Error retrieving pet from Swagger Petstore.", exception);
     }
   }
 
@@ -39,10 +42,14 @@ public class PetStoreClient {
    */
   public PetStorePetDto createPet(PetStorePetDto pet) {
 
-    try{
-    return restClient.post().uri("/pet").body(pet).retrieve().body(PetStorePetDto.class);
-    }catch (RestClientException ex){
-      throw new ExternalServiceException("Error creating pet in Swagger Petstore.",ex);
+    try {
+      return restClient.post()
+          .uri("/pet")
+          .body(pet)
+          .retrieve()
+          .body(PetStorePetDto.class);
+    } catch (RestClientException exception) {
+      throw new ExternalServiceException("Error creating pet in Swagger Petstore.", exception);
     }
   }
 }

@@ -1,6 +1,5 @@
 package com.baersolutions.petapi.exception;
 
-
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -13,11 +12,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /**
  * Maneja de forma centralizada las excepciones de la API.
  */
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   /**
    * Maneja errores ocurridos al consumir Swagger Petstore.
@@ -27,17 +26,27 @@ public class GlobalExceptionHandler {
    * @return respuesta de error estandarizada
    */
   @ExceptionHandler(ExternalServiceException.class)
-  ResponseEntity<ErrorResponse> handleExternalServiceException(ExternalServiceException exception,
-      HttpServletRequest request){
-    LOGGER.error("External service error on path {}:{}",request.getRequestURI(),exception.getMessage(),exception);
+  public ResponseEntity<ErrorResponse> handleExternalServiceException(
+      ExternalServiceException exception,
+      HttpServletRequest request) {
+
+    LOGGER.error(
+        "External service error on path {}: {}",
+        request.getRequestURI(),
+        exception.getMessage(),
+        exception
+    );
+
     HttpStatus status = HttpStatus.BAD_GATEWAY;
 
     ErrorResponse response = new ErrorResponse(
-        LocalDateTime.now(),status.value(),
-        status.getReasonPhrase(),exception.getMessage(),
+        LocalDateTime.now(),
+        status.value(),
+        status.getReasonPhrase(),
+        exception.getMessage(),
         request.getRequestURI()
     );
-    return ResponseEntity.status(status).body(response);
-    }
-  }
 
+    return ResponseEntity.status(status).body(response);
+  }
+}

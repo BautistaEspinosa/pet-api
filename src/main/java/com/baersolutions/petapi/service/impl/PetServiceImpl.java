@@ -29,7 +29,11 @@ public class PetServiceImpl implements PetService {
     PetStorePetDto pet = petStoreClient.getPetById(petId);
 
     LOGGER.info(
-        "Pet obtained from Petstore: id={}, name={},status={}", pet.id(), pet.name(), pet.status());
+        "Pet obtained from Petstore: id={}, name={}, status={}",
+        pet.id(),
+        pet.name(),
+        pet.status()
+    );
     return new PetResponse(pet.id(), pet.name(), pet.status());
   }
 
@@ -41,10 +45,11 @@ public class PetServiceImpl implements PetService {
     PetStorePetDto createdPet = petStoreClient.createPet(petToCreate);
 
     LOGGER.info(
-        "Pet created in Petstore: id={},name={},status={}",
+        "Pet created in Petstore: id={}, name={}, status={}",
         createdPet.id(),
         createdPet.name(),
-        createdPet.status());
+        createdPet.status()
+    );
 
     return new CreatePetResponse(
         UUID.randomUUID(), LocalDateTime.now(), createdPet.status(), createdPet.name());

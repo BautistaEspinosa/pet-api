@@ -1,0 +1,97 @@
+[1mdiff --git a/src/main/java/com/baersolutions/petapi/client/PetStoreClient.java b/src/main/java/com/baersolutions/petapi/client/PetStoreClient.java[m
+[1mindex 86f59f2..8c5c183 100644[m
+[1m--- a/src/main/java/com/baersolutions/petapi/client/PetStoreClient.java[m
+[1m+++ b/src/main/java/com/baersolutions/petapi/client/PetStoreClient.java[m
+[36m@@ -39,10 +39,10 @@[m [mpublic class PetStoreClient {[m
+    */[m
+   public PetStorePetDto createPet(PetStorePetDto pet) {[m
+ [m
+[31m-    try{[m
+[31m-    return restClient.post().uri("/pet").body(pet).retrieve().body(PetStorePetDto.class);[m
+[31m-    }catch (RestClientException ex){[m
+[31m-      throw new ExternalServiceException("Error creating pet in Swagger Petstore.",ex);[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      return restClient.post().uri("/pet").body(pet).retrieve().body(PetStorePetDto.class);[m
+[32m+[m[32m    } catch (RestClientException ex) {[m
+[32m+[m[32m      throw new ExternalServiceException("Error creating pet in Swagger Petstore.", ex);[m
+     }[m
+   }[m
+ }[m
+[1mdiff --git a/src/main/java/com/baersolutions/petapi/exception/GlobalExceptionHandler.java b/src/main/java/com/baersolutions/petapi/exception/GlobalExceptionHandler.java[m
+[1mindex dd74b24..b2ccd74 100644[m
+[1m--- a/src/main/java/com/baersolutions/petapi/exception/GlobalExceptionHandler.java[m
+[1m+++ b/src/main/java/com/baersolutions/petapi/exception/GlobalExceptionHandler.java[m
+[36m@@ -1,6 +1,5 @@[m
+ package com.baersolutions.petapi.exception;[m
+ [m
+[31m-[m
+ import jakarta.servlet.http.HttpServletRequest;[m
+ import java.time.LocalDateTime;[m
+ import org.slf4j.Logger;[m
+[36m@@ -10,10 +9,7 @@[m [mimport org.springframework.http.ResponseEntity;[m
+ import org.springframework.web.bind.annotation.ExceptionHandler;[m
+ import org.springframework.web.bind.annotation.RestControllerAdvice;[m
+ [m
+[31m-/**[m
+[31m- * Maneja de forma centralizada las excepciones de la API.[m
+[31m- */[m
+[31m-[m
+[32m+[m[32m/** Maneja de forma centralizada las excepciones de la API. */[m
+ @RestControllerAdvice[m
+ public class GlobalExceptionHandler {[m
+ [m
+[36m@@ -27,17 +23,22 @@[m [mpublic class GlobalExceptionHandler {[m
+    * @return respuesta de error estandarizada[m
+    */[m
+   @ExceptionHandler(ExternalServiceException.class)[m
+[31m-  ResponseEntity<ErrorResponse> handleExternalServiceException(ExternalServiceException exception,[m
+[31m-      HttpServletRequest request){[m
+[31m-    LOGGER.error("External service error on path {}:{}",request.getRequestURI(),exception.getMessage(),exception);[m
+[32m+[m[32m  ResponseEntity<ErrorResponse> handleExternalServiceException([m
+[32m+[m[32m      ExternalServiceException exception, HttpServletRequest request) {[m
+[32m+[m[32m    LOGGER.error([m
+[32m+[m[32m        "External service error on path {}:{}",[m
+[32m+[m[32m        request.getRequestURI(),[m
+[32m+[m[32m        exception.getMessage(),[m
+[32m+[m[32m        exception);[m
+     HttpStatus status = HttpStatus.BAD_GATEWAY;[m
+ [m
+[31m-    ErrorResponse response = new ErrorResponse([m
+[31m-        LocalDateTime.now(),status.value(),[m
+[31m-        status.getReasonPhrase(),exception.getMessage(),[m
+[31m-        request.getRequestURI()[m
+[31m-    );[m
+[32m+[m[32m    ErrorResponse response =[m
+[32m+[m[32m        new ErrorResponse([m
+[32m+[m[32m            LocalDateTime.now(),[m
+[32m+[m[32m            status.value(),[m
+[32m+[m[32m            status.getReasonPhrase(),[m
+[32m+[m[32m            exception.getMessage(),[m
+[32m+[m[32m            request.getRequestURI());[m
+     return ResponseEntity.status(status).body(response);[m
+[31m-    }[m
+   }[m
+[31m-[m
+[32m+[m[32m}[m
+[1mdiff --git a/src/main/java/com/baersolutions/petapi/service/impl/PetServiceImpl.java b/src/main/java/com/baersolutions/petapi/service/impl/PetServiceImpl.java[m
+[1mindex 2fea17b..b206e12 100644[m
+[1m--- a/src/main/java/com/baersolutions/petapi/service/impl/PetServiceImpl.java[m
+[1m+++ b/src/main/java/com/baersolutions/petapi/service/impl/PetServiceImpl.java[m
+[36m@@ -29,7 +29,7 @@[m [mpublic class PetServiceImpl implements PetService {[m
+     PetStorePetDto pet = petStoreClient.getPetById(petId);[m
+ [m
+     LOGGER.info([m
+[31m-        "Pet obtained from Petstore: id={}, name={},status={}", pet.id(), pet.name(), pet.status());[m
+[32m+[m[32m        "Pet obtained from Petstore: id={}, name={}, status={}", pet.id(), pet.name(), pet.status());[m
+     return new PetResponse(pet.id(), pet.name(), pet.status());[m
+   }[m
+ [m
+[36m@@ -41,7 +41,7 @@[m [mpublic class PetServiceImpl implements PetService {[m
+     PetStorePetDto createdPet = petStoreClient.createPet(petToCreate);[m
+ [m
+     LOGGER.info([m
+[31m-        "Pet created in Petstore: id={},name={},status={}",[m
+[32m+[m[32m        "Pet created in Petstore: id={}, name={}, status={}",[m
+         createdPet.id(),[m
+         createdPet.name(),[m
+         createdPet.status());[m
